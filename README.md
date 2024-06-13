@@ -1,5 +1,5 @@
-# comics-keeper
-A web application to keep track of a comics collection, in a Docker container.
+# hoard-helper
+A web application to keep track of a collection, in a Docker container.
 
 # development environment
 * Windows 11 Version 22H2 (OS Build 22621.3593)
