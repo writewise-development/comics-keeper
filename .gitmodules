@@ -1,4 +1,0 @@
-[submodule "tools/utilities"]
-	path = tools/utilities
-	url = https://github.com/WilWa/utilities.git
-	branch = main
