@@ -1,0 +1,24 @@
+# Used for Visual Studio 2022 debugging, overrides settings in docker-compose.override.yml, and then Visual Studio's
+# built-in generated files (obj/Docker/docker-compose.vs.*).
+# See: https://docs.microsoft.com/en-us/visualstudio/containers/docker-compose-properties?view=vs-2022#overriding-visual-studios-docker-compose-configuration
+
+name: hoard-helper
+
+services:
+  hoardhelper.api:
+    build:
+      target: visualstudio
+    container_name: ${API_CONTAINER}
+    image: ${COMPOSE_PROJECT_NAME}/${API_IMAGE}:vs
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  hoardhelper.web:
+    build:
+      target: visualstudio
+    container_name: ${WEB_CONTAINER}
+    image: ${COMPOSE_PROJECT_NAME}/${WEB_IMAGE}:vs
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

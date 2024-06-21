@@ -8,3 +8,7 @@ A web application to keep track of a collection, running in a Docker container.
 * Ubuntu 24.04 LTS 'Noble Numbat'
 * dotnet-sdk-8.0 8.0.105
 * Visual Studio Code 1.90.0
+
+# Todo
+Create front-end project
+Not certain about postgres

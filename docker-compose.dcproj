@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk" InitialTargets="ExportCert">
+  <Import Project="src\.env.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectVersion>2.1</ProjectVersion>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <DockerPublishLocally>False</DockerPublishLocally>
+    <ProjectGuid>6352a6ef-0501-4536-af1e-7e48b330f23e</ProjectGuid>
+    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+    <DockerComposeProjectName>hoard-helper</DockerComposeProjectName>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include=".env.props" />
+    <None Include="docker-compose.override.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
+    <None Include="docker-compose.vs.debug.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
+    <None Include="docker-compose.yml" />
+    <None Include=".env" />
+    <None Include=".env.local" />
+  </ItemGroup>
+  <PropertyGroup>
+    <HttpsFolder>$(MSBuildProjectDirectory)\$(UtilitiesPath)\$(CertFolder)</HttpsFolder>
+    <ScriptFolder>$(MSBuildProjectDirectory)\$(UtilitiesPath)\scripts\Windows</ScriptFolder>
+  </PropertyGroup>
+  <Target Name="ExportDevCert" Inputs="$(ScriptFolder)\Export-DevCert.ps1" Outputs="$(HttpsFolder)\$(CertEnv);$(HttpsFolder)\$(CertCrt);$(HttpsFolder)\$(CertKey);$(HttpsFolder)\$(CertPfx)" Condition=" '$(BuildingInsideVisualStudio)' == 'true'">
+    <Exec Command="powershell -ExecutionPolicy ByPass $(ScriptFolder)\Export-DevCert.ps1" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+  <ItemGroup>
+    <None Remove="src\**" />
+  </ItemGroup>
+</Project>

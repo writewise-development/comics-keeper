@@ -1,0 +1,98 @@
+name: hoard-helper
+
+services:
+  hoardhelper.api:
+    build:
+      args:
+        GID: ${USER_GID}
+        UID: ${USER_UID}
+        USER: ${USER_NAME}
+      dockerfile: ${UTLITIES_DOCKERFILES_PATH}/aspnetcore8.dev.Dockerfile
+      target: dev
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      DOTNET_WATCH_RESTART_ON_RUDE_EDIT: true
+    image: ${COMPOSE_PROJECT_NAME}/${API_IMAGE}:codedev
+    labels:
+      com.microsoft.visual-studio.project-name: ${API_PROJECT_NAME}
+    volumes:
+      - ./src:/src
+      - ~/.vsdbg:/remote_debugger:rw
+
+  hoardhelper.pgadmin:
+    build:
+      args:
+        DB_NAME: ${DB_NAME}
+        CERT_CRT: ${CERT_CRT_FILEPATH}
+        CERT_KEY: ${CERT_KEY_FILEPATH}
+        PORT_DB: ${PORT_DB}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_USER: ${POSTGRES_USER}
+      context: .
+      dockerfile: ${UTLITIES_DOCKERFILES_PATH}/pgadmin.Dockerfile
+      labels:
+        project: ${COMPOSE_PROJECT_NAME}
+      target: dev
+    container_name: ${PGADMIN_CONTAINER}
+    depends_on:
+      hoardhelper.pgdata:
+        condition: service_healthy
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      PGADMIN_ENABLE_TLS: true
+      PGADMIN_LISTEN_PORT: ${PORT_DBADMIN}
+    extra_hosts:
+      localhost: host-gateway
+    image: ${COMPOSE_PROJECT_NAME}/${PGADMIN_IMAGE}:dev
+    ports:
+      - ${PORT_DBADMIN}:${PORT_DBADMIN}
+    volumes:
+      - lib-pgadmin:/var/lib/pgadmin
+
+  hoardhelper.vite:
+    build:
+      args:
+        CERT_CRT: ${CERT_CRT_FILEPATH}
+        IP_PORT: ${PORT_SPA}
+      context: .
+      dockerfile: ${UTLITIES_DOCKERFILES_PATH}/vite.dev.Dockerfile
+      labels:
+        project: ${COMPOSE_PROJECT_NAME}
+      target: dev
+    container_name: ${SPA_CONTAINER}      
+    extra_hosts:
+      localhost: host-gateway
+    image: ${COMPOSE_PROJECT_NAME}/${SPA_IMAGE}:dev
+    ports:
+      - ${PORT_SPA}:${PORT_SPA}
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./${CERT_FOLDERPATH}:${CERT_VOLPATH}
+      - ./src/${SPA_FOLDER}:/src
+      - ./.env:/src/.env:ro
+      #- ./.env.local:/src/.env.local:ro
+      - node-modules:/src/node_modules/
+
+  hoardhelper.web:
+    build:
+      args:
+        GID: ${USER_GID}
+        UID: ${USER_UID}
+        USER: ${USER_NAME}
+      dockerfile: ${UTLITIES_DOCKERFILES_PATH}/aspnetcore8.dev.Dockerfile
+      target: dev
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      DOTNET_WATCH_RESTART_ON_RUDE_EDIT: true
+    image: ${COMPOSE_PROJECT_NAME}/${WEB_IMAGE}:codedev
+    labels:
+      com.microsoft.visual-studio.project-name: ${WEB_PROJECT_NAME}
+    volumes:
+      - ./src:/src
+      - ~/.vsdbg:/remote_debugger:rw
+
+volumes:
+  lib-pgadmin:
+  node-modules:
