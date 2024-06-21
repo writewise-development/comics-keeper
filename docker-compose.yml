@@ -1,33 +1,6 @@
 name: hoard-helper
 
 services:
-  hoardhelper.api:
-    build:
-      args:
-        CERT_CRT: ${CERT_CRT_FILEPATH}
-        PORT: ${PORT_API}
-        PROJECT: ${API_PROJECT_NAME}
-      context: .
-      dockerfile: ${UTLITIES_DOCKERFILES_PATH}/aspnetcore8-api.Dockerfile
-      target: final
-    labels:
-      project: ${COMPOSE_PROJECT_NAME}
-    container_name: ${API_CONTAINER}
-    env_file: ${CERT_ENV_FILEPATH}
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_HTTPS_PORTS: ${PORT_API}
-      Kestrel__Certificates__Default__Path: ${CERT_VOLPATH}/${CERT_PFX}
-    extra_hosts:
-      localhost: host-gateway
-    image: ${COMPOSE_PROJECT_NAME}/${API_IMAGE}:local
-    ports:
-      - ${PORT_API}:${PORT_API}
-    stdin_open: true
-    tty: true
-    volumes:
-      - ./${CERT_FOLDERPATH}:${CERT_VOLPATH}
-
   hoardhelper.web:
     build:
       args:

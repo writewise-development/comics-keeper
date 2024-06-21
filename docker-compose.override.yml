@@ -1,24 +1,6 @@
 name: hoard-helper
 
 services:
-  hoardhelper.api:
-    build:
-      args:
-        GID: ${USER_GID}
-        UID: ${USER_UID}
-        USER: ${USER_NAME}
-      dockerfile: ${UTLITIES_DOCKERFILES_PATH}/aspnetcore8.dev.Dockerfile
-      target: dev
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      DOTNET_WATCH_RESTART_ON_RUDE_EDIT: true
-    image: ${COMPOSE_PROJECT_NAME}/${API_IMAGE}:codedev
-    labels:
-      com.microsoft.visual-studio.project-name: ${API_PROJECT_NAME}
-    volumes:
-      - ./src:/src
-      - ~/.vsdbg:/remote_debugger:rw
-
   hoardhelper.pgadmin:
     build:
       args:
